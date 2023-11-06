@@ -13,8 +13,10 @@ const booksController = new BooksController()
 
 app.get('/users', usersController.findAll.bind(usersController))
 app.get('/users/:id', usersController.findOne.bind(usersController))
+app.get('/users/login/:login', usersController.findOneByLogin.bind(usersController))
 app.put('/users/:id', bodyParser.json(), usersController.update.bind(usersController))
 app.post('/users', bodyParser.json(), usersController.create.bind(usersController))
+app.post('/users/auth/:login', bodyParser.json(), usersController.auth.bind(usersController))
 app.delete('/users/:id', usersController.delete.bind(usersController))
 
 app.get('/books', booksController.findAll.bind(booksController))
