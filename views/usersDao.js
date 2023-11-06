@@ -10,22 +10,29 @@ class UsersDao extends Dao {
     INSERT INTO ${this.table} 
       (
         ${Object.keys(body).join(', ')}
-      ) VALUES (?, ?, ?, ?)`
+      ) VALUES (?, ?, ?, ?, ?, ?, ?)`
     const data = await pool.query(query, [...Object.values(body)])
     pool.end()
     return data
   }
-  async update(id, body) {
+
+  async findOneByLogin(login) {
     const pool = mysql2.createPool(this.config)
-
-    const keys = Object.keys(body);
-    const values = Object.values(body);
-    const sets = keys.map(key => `${key} = ?`).join(', ');
-    const query = `UPDATE ${this.table} SET ${sets} WHERE id = ?`;
-
-    const data = await pool.query(query, [...values, id]);
-    pool.end()
+    const query = `
+    SELECT * FROM ${this.table} WHERE login = ? LIMIT 1`
+    const data = await pool.query(query, [login])
+    pool.end
     return data
   }
+
+  async auth(login, password) {
+    const pool = mysql2.createPool(this.config)
+    const query = `
+    SELECT * FROM ${this.table} WHERE login = ? AND password = ? LIMIT 1`
+    const data = await pool.query(query, [login, password])
+    pool.end
+    return data
+  }
+
 }
 module.exports = UsersDao

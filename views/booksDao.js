@@ -4,6 +4,12 @@ class BooksDao extends Dao {
   constructor() {
     super('books')
   }
+  async findAll() {
+    const pool = mysql2.createPool(this.config)
+    const data = await pool.query(`SELECT ${this.table}.*, users.name, users.surname FROM ${this.table} LEFT JOIN users ON ${this.table}.author_id = users.id`)
+    pool.end()
+    return data
+  }
   async create(body) {
     const pool = mysql2.createPool(this.config)
     const query = `
